@@ -1,0 +1,74 @@
+/* CSS Document */
+body
+{
+	margin: 30px 20px;
+	padding: 0;
+	font-family: FibraOne-Bold, Gotham Rounded A, Gotham Rounded B, Segoe UI, Roboto, Oxygen, Ubuntu, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+.TableHead{
+	display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: center;
+	align-items: flex-end;
+	width: 100%;
+}
+.flex-item:nth-child(2) {
+    order: 0;
+    flex: 1 1 auto;
+    float: auto;
+    }
+
+.flex-item:nth-child(3) {
+    order: 0;
+    flex: 1 1 auto;
+	float: auto;
+	background: #C13E41;
+	color: #fff;
+	border: 1px solid #222;
+	max-width: 170px;
+    }
+button{
+	padding: 10px 20px;
+	margin-top: 14px;
+	margin-bottom: 14px;
+	margin-left: 20px;
+	margin-right: 20px;
+	border: 1px solid #00E603;
+	background: #00F440;
+	color: #222;
+	font-weight: bold;
+	font-size: 20px;
+}
+button.switch
+{
+	opacity: 0%;
+	transform: perspective(1000px) rotateX(-90deg);
+	transition: 0.5s;
+	background: #C13E41;
+	border: 1px solid #222;
+	color: #fff;
+}
+button.switch.active
+{
+	opacity: 100%;
+	transform: perspective(1000px) rotateX(0deg);
+	transition: .5s;
+	background: #C13E41;
+	border: 1px solid #222;
+	color: #fff;
+}
+#select-stats.switch
+{
+	opacity: 0%;
+	transition: .5s;
+	color: #fff;
+}
+#select-stats.switch.active
+{
+	opacity: 100%;
+	transition: .5s;
+	color: #fff;
+}

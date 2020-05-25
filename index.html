@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+	<!-- Meta Tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">	
+	
+	<!-- Siteconfig -->
+	<title>IT0x - HOME</title>
+	<link rel="shortcut icon" type="image/x-icon" href="IMG/render.ico">
+	
+
+	
+	<!-- CSS - Links -->
+	<link href="CSS/index.css" rel="stylesheet" type="text/css">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	
+	<!-- JS - Methods -->
+	<script type="text/javascript">
+        function switchActive(object) {
+            object.classList.toggle('active');
+        }
+	</script>
+</head>
+
+<body>
+	<div class="fullHeight">
+		<div id="header">
+			<div class="left">
+				<a class="homebtn" data-title="Home" aria-hidden="true" target="iframe" href="week.html">Home
+					<span></span>
+					<span></span>
+					<span></span>
+					<span></span>
+				</a>
+			</div>
+		<div class="mid">
+			<div class="titlelong">IT0x - Klasseninfos</div>
+			<div class="titleshort">IT0x</div>
+		</div>
+			<div class="right">
+				<div id="icon" class="icon" onclick="switchActive(this); switchActive(document.getElementById('ul_side')); switchActive(document.getElementById('iframe'));">	
+					<div class="menu">					
+					</div>
+				</div>
+			</div>	
+		</div>
+  		<div id="main">
+			<ul id ="ul_side" class="ulside">
+					<li>
+						<a class="ulside" href="dashboard.html" target="iframe" onclick="switchActive(document.getElementById('iframe')); switchActive(document.getElementById('ul_side')); switchActive(document.getElementById('icon'));">Aktuelle Woche</a>
+					</li>
+					<li>
+						<a class="ulside" href="dashboard.html" target="iframe" onclick="switchActive(document.getElementById('iframe')); switchActive(document.getElementById('ul_side')); switchActive(document.getElementById('icon'));">Aufgaben/Abgaben</a>
+					</li>
+				</ul>
+			<iframe class="" id="iframe" name="iframe" src="week.html"></iframe>
+		</div>
+  		<div id="footer">
+			<a class="reportAProblem" href="https://wa.me/491734085456?Folgendes%20Problem:">Report a Problem</a>
+  		</div>	
+	</div>
+</body>
+</html>
