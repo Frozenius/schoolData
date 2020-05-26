@@ -4,13 +4,14 @@
 	<meta charset="utf-8">
 	
 	<title>Aktuelle Woche</title>
-	<link href="CSS/week.css" rel="stylesheet" type="text/css">
+	<link href="CSS/table.css" rel="stylesheet" type="text/css">
 	
 	<!-- Tabulator - Links -->
 	<link href="https://unpkg.com/tabulator-tables@4.6.3/dist/css/tabulator.min.css" rel="stylesheet">
 	<script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.6.3/dist/js/tabulator.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script defer src="JS/moment.js" type="text/javascript"></script>
+    <link href="dist/css/materialize/tabulator_materialize.min.css" rel="stylesheet">
 	
 	<script type="text/javascript">
 		function switchActive(object) {
@@ -20,10 +21,23 @@
 </head>
 
 <body>
+	<div class="loader">
+		<span>L</span>
+		<span>O</span>
+		<span>A</span>
+		<span>D</span>
+		<span>I</span>
+		<span>N</span>
+		<span>G</span>
+		<span>.</span>
+		<span>.</span>
+		<span>.</span>
+	</div>
 	<div class="TableHead">
 		<button id="select-row" onClick="switchActive(document.getElementById('del-row'));switchActive(document.getElementById('select-stats'))">Markieren</button>
 		<button class="flex-item" id="add-row">Neuer Termin</button>
 		<button class="flex-item" id="edit-table">SAVE-DATA</button>
+		<button class="flex-item"><a href="week.html">REFRESH</a></button>
 		
 	</div>
 	<div id="week-table"></div>
@@ -89,21 +103,22 @@ function doNothing(){
 		
 		// Table as Week 
 		var table = new Tabulator("#week-table", {
-			layout:"fitDataStretch",
+			layout:"fitColumns",
 			responsiveLayout:"hide",
 			addRowPos:"top",
 			initialSort:[
 				{column:"date", dir:"asc"},
 			],
 			columns:[
-				{formatter:"rowSelection", cssClass:"tick", titleFormatter:"rowSelection", width:20, align:"center", headerSort:false, cellClick:function(e, cell){
+				{formatter:"rowSelection", cssClass:"tick", titleFormatter:"rowSelection", width:60, align:"center", headerSort:false, cellClick:function(e, cell){
 					cell.getRow().toggleSelect();
 				}},
-				{title:"TAG", field:"tag", editor:"select", editorParams:{values:["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"]}},
-				{title:"ZEIT", field:"time", editor:"input", formatter:"datetime", formatterParams:{inputFormat:"HH:mm", outputFormat:"HH:mm", invalidPlaceholder:"Invalid Time"}},
-				{title:"THEMA", field:"what", editor:"input"},
-				{title:"MEETING", field:"link", editor:"input", editable:editCheck, formatter:"link", formatterParams:{target:"_blank"}},
-				{title:"DATUM", field:"date", editable: true, editor: dateEditor },
+				{title:"TAG", field:"tag", editor:"select", editorParams:{values:["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"]}, hozAlign:"center"},
+				{title:"ZEIT", field:"time", editor:"input", formatter:"datetime", formatterParams:{inputFormat:"HH:mm", outputFormat:"HH:mm", invalidPlaceholder:"Invalid Time"}, hozAlign:"center"},
+                {title:"FACH", field:"fach", editor:"select", width:100, hozAlign:"center", editorParams:{values:["AE-M", "AE-WS", "FE", "IT-M", "IT-WS", "LF3", "OuG", "SuK", "WuG"]}},
+				{title:"THEMA", field:"what", editor:"input", hozAlign:"center"},
+				{title:"MEETING", field:"link", editor:"input", width:900,editable:editCheck, formatter:"link", formatterParams:{target:"_blank"}, hozAlign:"center"},
+				{title:"DATUM", field:"date", editable: true, editor: dateEditor, width:150, hozAlign:"center"},
 			],
 				//Anzeige der Selected Rows
 			rowSelectionChanged:function(data, rows){

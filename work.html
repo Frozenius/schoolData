@@ -1,0 +1,208 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	
+	<title>Aktuelle Aufgaben</title>
+	<link href="CSS/table.css" rel="stylesheet" type="text/css">
+	
+	<!-- Tabulator - Links -->
+	<link href="https://unpkg.com/tabulator-tables@4.6.3/dist/css/tabulator.min.css" rel="stylesheet">
+	<script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.6.3/dist/js/tabulator.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script defer src="JS/moment.js" type="text/javascript"></script>
+    <link href="dist/css/materialize/tabulator_materialize.min.css" rel="stylesheet">
+	
+	<script type="text/javascript">
+		function switchActive(object) {
+			object.classList.toggle('active');
+		}
+	</script>
+</head>
+
+<body>
+	<div class="TableHead">
+		<button id="select-row" onClick="switchActive(document.getElementById('del-row'));switchActive(document.getElementById('select-stats'))">Markieren</button>
+		<button class="flex-item" id="add-row">Neue Aufgabe</button>
+		<button class="flex-item" id="edit-table">SAVE-DATA</button>
+		<button class="flex-item"><a href="work.html">REFRESH</a></button>
+		
+	</div>
+	<div id="week-table"></div>
+	<div class="TableFoot">
+		<button id="del-row" class="switch">Delete Selected Line</button>
+		<span id="select-stats" class="switch">
+			<strong>Selected: <span class="highlight">0</span></strong>
+		</span>
+		
+	</div>
+	<script>
+
+function doNothing(){
+			
+		}
+		
+		var editCheck = function(cell){
+			var data = cell.getRow().getData();
+		
+			return !(data.link)
+		}
+		
+		var dateEditor = function(cell, onRendered, success, cancel, editorParams){
+    //cell - the cell component for the editable cell
+    //onRendered - function to call when the editor has been rendered
+    //success - function to call to pass the successfuly updated value to Tabulator
+    //cancel - function to call to abort the edit and return to a normal cell
+    //editorParams - params object passed into the editorParams column definition property
+
+    //create and style editor
+    var editor = document.createElement("input");
+
+    editor.setAttribute("type", "date");
+
+    //create and style input
+    editor.style.padding = "3px";
+    editor.style.width = "100%";
+    editor.style.boxSizing = "border-box";
+
+    //Set value of editor to the current value of the cell
+    editor.value = moment(cell.getValue(), "DD/MM/YYYY").format("YYYY-MM-DD")
+
+    //set focus on the select box when the editor is selected (timeout allows for editor to be added to DOM)
+    onRendered(function(){
+        editor.focus();
+        editor.style.css = "100%";
+    });
+
+    //when the value has been set, trigger the cell to update
+    function successFunc(){
+        success(moment(editor.value, "YYYY-MM-DD").format("DD/MM/YYYY"));
+    }
+
+    editor.addEventListener("change", successFunc);
+    editor.addEventListener("blur", successFunc);
+
+    //return the editor element
+    return editor;
+};
+		//-------------------------------------------------------------------------------------------------------------------------------------------------------//
+		
+					// TABLE CONFIG //
+		
+		// Table as Week 
+		var table = new Tabulator("#week-table", {
+			layout:"fitDataStretch",
+			responsiveLayout:"hide",
+			addRowPos:"top",
+			initialSort:[
+				{column:"date", dir:"asc"},
+			],
+			columns:[
+				{formatter:"rowSelection", cssClass:"tick", titleFormatter:"rowSelection", width:60, align:"center", headerSort:false, cellClick:function(e, cell){
+					cell.getRow().toggleSelect();
+				}},
+                {title:"FACH", field:"fach", editor:"select", width:100, hozAlign:"center", editorParams:{values:["AE-M", "AE-WS", "FE", "IT-M", "IT-WS", "LF3", "OuG", "SuK", "WuG"]}},
+				{title:"ZU WANN", field:"date", editable: true, editor: dateEditor, width:150, hozAlign:"center"},
+				{title:"MOODLE", field:"link", editor:"input", width:900,editable:editCheck, formatter:"link", formatterParams:{target:"_blank"}, hozAlign:"center"},
+				{title:"ERLEDIGT", field:"tick", hozAlign:"center", editor:true, formatter:"tickCross", formatterParams:{allowEmpty:false,allowTruthy:false}, width:60},
+			],
+				//Anzeige der Selected Rows
+			rowSelectionChanged:function(data, rows){
+				//update selected row counter on selection change
+				$("#select-stats span").text(data.length);
+			},
+		
+		});
+		setup();
+		
+		//-------------------------------------------------------------------------------------------------------------------------------------------------------//
+		
+		//Abfrage der Tabelle	
+		function setup() {
+			table.getColumns()[0].toggle();
+			var xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						updateTable(xhr.responseText);
+					}
+				};
+			xhr.open('GET', 'http://salty-gamingclub.spdns.de:27210/schoolWork/jsonGET', true);
+			xhr.onload = function () {
+			  // Request finished. Do processing here.
+			};
+			xhr.send(null);
+		
+		 }
+			
+		function askServer(method, path, func){
+			var xhttp = new XMLHttpRequest();
+				
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						func(xhttp.responseText);
+					}
+				};
+				xhttp.open(method, "http://salty-gamingclub.spdns.de:27210/schoolWork/"+path , true);
+			
+				xhttp.send();
+		}
+		
+		// Overwrite Table
+		function updateTable(request){
+			var json = JSON.parse(request);
+			table.setData(json);
+			 iterateTable();
+		}
+			
+		// Debug Console
+			function iterateTable(){
+				console.log(table);
+					var data = table.getColumns(); 
+					console.log(data);
+					table.getColumns().shift();
+					console.log(table.getColumns());
+			}
+			
+				//Button Methoden
+				// Delete Selected Row
+				$("#del-row").click(function(){
+					var rows = table.getSelectedRows();
+					console.log(rows);
+					for(var i = 0; i < rows.length; i++){
+						rows[i].delete();
+					}
+				});	
+				// Auswahl Starten
+				$("#select-row").click(function(){
+					table.getColumns()[0].toggle();
+					table.deselectRow();
+				});
+					// Add New Row
+					$("#add-row").click(function(){
+						table.addRow({});
+					});
+					
+					// Save Data 
+					$("#edit-table").click(function editTable(){
+					var xhr = new XMLHttpRequest();
+			xhr.open("POST", 'http://salty-gamingclub.spdns.de:27210/schoolWork/jsonPOST=', true);
+			
+			//Send the proper header information along with the request
+			
+			xhr.onreadystatechange = function() { // Call a function when the state changes.
+				if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+					// Request finished. Do processing here.
+				}
+			}
+			console.log(table.getData());
+			xhr.send(JSON.stringify(table.getData()));
+					});
+		
+					
+					
+		
+		//-------------------------------------------------------------------------------------------------------------------------------------------------------//                
+
+	</script> 
+</body>
+</html>
